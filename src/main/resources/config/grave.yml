@@ -11,6 +11,7 @@ settings:
       grave:
         time: 10800 # (Second) How long graves should stay alive for, 300 = 5 minutes, 10800 = 3 hours, -1 lasts forever.
         max: 18 # The max amount of graves an entity can have.
+        break-oldest: false # Delete oldest grave when max graves is exceeded
         break: true # Can graves be broken.
         explode: false # Can graves be blown up.
 
@@ -516,6 +517,7 @@ settings:
         timeout: "Your grave at &c%x%&rx, &c%y%&ry, &c%z%&rz in &c%world_formatted%&r timed out with &c%item% &ritems and &c%experience% &rExperience."
         ignore: "A grave was not created because you died in &c%name%&r."
         max: "A grave was not created, you have reached the maximum."
+        oldest-broken: "Your oldest grave was broken, you have reached the maximum"
         failure-keep-inventory: "A grave was unable to find a suitable location, preserving inventory."
         failure: "A grave was unable to find a suitable location, item's dropped on ground."
         no-money: "You don't have enough money, you need &c%teleport_cost%&r."

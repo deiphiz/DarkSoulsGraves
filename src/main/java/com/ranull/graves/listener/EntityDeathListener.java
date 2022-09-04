@@ -39,6 +39,7 @@ public class EntityDeathListener implements Listener {
         List<String> permissionList = livingEntity instanceof Player ? plugin.getPermissionList(livingEntity) : null;
         List<String> worldList = plugin.getConfig("world", livingEntity, permissionList).getStringList("world");
         List<ItemStack> removedItemStackList = new ArrayList<>();
+        List<Grave> graveList = plugin.getGraveManager().getGraveList(livingEntity);
 
         // Removed items
         if (plugin.getCacheManager().getRemovedItemStackMap().containsKey(livingEntity.getUniqueId())) {
@@ -213,14 +214,28 @@ public class EntityDeathListener implements Listener {
         }
 
         // Max
-        if (plugin.getGraveManager().getGraveList(livingEntity).size()
+        if (graveList.size()
                 >= plugin.getConfig("grave.max", livingEntity, permissionList).getInt("grave.max")) {
-            plugin.getEntityManager().sendMessage("message.max", livingEntity,
-                    livingEntity.getLocation(), permissionList);
-            plugin.debugMessage("Grave not created for " + entityName
-                    + " because they reached maximum graves", 2);
-
-            return;
+            if (plugin.getConfig("grave.break-oldest", livingEntity, permissionList).getBoolean("grave.break-oldest")) {
+	        	Grave oldestGrave = null;
+	        	long oldestAge = 0;
+	        	for (Grave grave : graveList) {
+	        		long age = grave.getLivedTime();
+	        		if (grave.getLivedTime() >= oldestAge){
+	        			oldestGrave = grave;
+	        			oldestAge = age;
+	        		}
+	        	};
+	        	plugin.getEntityManager().sendMessage("message.oldest-broken", livingEntity,
+                        livingEntity.getLocation(), permissionList);
+	        	plugin.getGraveManager().breakGrave(oldestGrave);
+            } else {
+            	plugin.getEntityManager().sendMessage("message.max", livingEntity,
+                        livingEntity.getLocation(), permissionList);
+                plugin.debugMessage("Grave not created for " + entityName
+                        + " because they reached maximum graves", 2);
+            	return;
+            }
         }
 
         // Token
