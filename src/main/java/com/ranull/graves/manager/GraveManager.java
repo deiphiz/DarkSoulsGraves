@@ -576,6 +576,19 @@ public final class GraveManager {
         return getGraveList(entity).size();
     }
 
+    public Grave getOldestGrave(Entity entity) {
+    	Grave oldestGrave = null;
+    	long oldestAge = 0;
+    	for (Grave grave : getGraveList(entity)) {
+    		long age = grave.getLivedTime();
+    		if (age > oldestAge){
+    			oldestGrave = grave;
+    			oldestAge = age;
+    		}
+    	}
+    	return oldestGrave;
+    }
+    
     public boolean openGrave(Entity entity, Location location, Grave grave) {
         if (entity instanceof Player) {
             Player player = (Player) entity;

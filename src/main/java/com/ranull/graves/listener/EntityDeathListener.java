@@ -216,19 +216,19 @@ public class EntityDeathListener implements Listener {
         // Max
         if (graveList.size()
                 >= plugin.getConfig("grave.max", livingEntity, permissionList).getInt("grave.max")) {
-            if (plugin.getConfig("grave.break-oldest", livingEntity, permissionList).getBoolean("grave.break-oldest")) {
-	        	Grave oldestGrave = null;
-	        	long oldestAge = 0;
-	        	for (Grave grave : graveList) {
-	        		long age = grave.getLivedTime();
-	        		if (grave.getLivedTime() >= oldestAge){
-	        			oldestGrave = grave;
-	        			oldestAge = age;
-	        		}
-	        	};
-	        	plugin.getEntityManager().sendMessage("message.oldest-broken", livingEntity,
-                        livingEntity.getLocation(), permissionList);
-	        	plugin.getGraveManager().breakGrave(oldestGrave);
+            if (plugin.getConfig("grave.break-oldest", livingEntity, permissionList)
+            		.getBoolean("grave.break-oldest")) {
+	        	Grave oldestGrave = plugin.getGraveManager().getOldestGrave(livingEntity);
+	        	if (oldestGrave != null) {
+	        		plugin.getEntityManager().sendMessage("message.oldest-broken", livingEntity,
+	                        livingEntity.getLocation(), permissionList);
+	                plugin.debugMessage("Oldest grave for " + entityName
+	                        + " was broken because they reached maximum graves", 2);
+		        	plugin.getGraveManager().breakGrave(oldestGrave);
+	        	} else {
+	        		plugin.debugMessage("Could not find oldest grave for " + entityName
+	                        + ". Continuing to make new grave", 2);
+	        	}
             } else {
             	plugin.getEntityManager().sendMessage("message.max", livingEntity,
                         livingEntity.getLocation(), permissionList);
