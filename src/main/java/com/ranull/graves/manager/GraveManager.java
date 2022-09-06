@@ -575,11 +575,12 @@ public final class GraveManager {
     public int getGraveCount(Entity entity) {
         return getGraveList(entity).size();
     }
-
-    public Grave getOldestGrave(Entity entity) {
+    
+    public Grave getOldestGrave(List<Grave> graveList) {
     	Grave oldestGrave = null;
     	long oldestAge = 0;
-    	for (Grave grave : getGraveList(entity)) {
+    	
+    	for (Grave grave : graveList) {
     		long age = grave.getLivedTime();
     		if (age > oldestAge){
     			oldestGrave = grave;
